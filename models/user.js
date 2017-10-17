@@ -36,7 +36,7 @@ userSchema = new Schema({
 
 userSchema.methods.generateAndSaveAuthTokenWithAccess = async function (access) {
 	var token = jwt.sign({
-		_id: this._id.toHexString(),
+		sub: this._id,
 		access,
         iat: Date.now(),
         exp: new Date().setDate(new Date().getDate() + 1)

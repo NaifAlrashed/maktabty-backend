@@ -2,7 +2,7 @@ const User = require('../../models/user')
 const passportLocalStrategy = require('passport-local').Strategy
 const passportJWTStrategy = require('passport-jwt').Strategy
 const { ExtractJwt } = require('passport-jwt')
-const bcrypt = require('bcryptjs')
+const bcryptjs = require('bcryptjs')
 
 module.exports = (passport) => {
     passport.use(new passportJWTStrategy({
@@ -27,7 +27,7 @@ module.exports = (passport) => {
                 return done(null, false)
             }
             //check password
-            const isSamePassword = await bcrypt.compareSync(password, user.password)
+            const isSamePassword = await bcryptjs.compareSync(password, user.password)
             if (!isSamePassword) {
                 return done(null, false)
             }

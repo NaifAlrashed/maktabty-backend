@@ -7,10 +7,10 @@ departmentSchema = Schema ({
 		type: String,
 		required: true
 	},
-	courses: {
-		type: [Schema.ObjectId],
-		ref: 'course'
-	},
+	courses: [{
+		type: Schema.Types.ObjectId,
+		ref: 'user'
+	}],
 	university: {
 		type: Schema.ObjectId,
 		ref: 'university',
@@ -20,4 +20,4 @@ departmentSchema = Schema ({
 
 departmentSchema.plugin(mongooseErrorHandler)
 
-module.exports = mongoose.model('dsepartment', departmentSchema)
+module.exports = mongoose.model('department', departmentSchema)

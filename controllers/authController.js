@@ -18,7 +18,7 @@ router
             if (user) {
                 return res.status(401).json({message: "this user already exists"})
             }
-            newUser = new User()
+            var newUser = new User()
             newUser.email = req.body.email
             newUser.password = req.body.password
             const token = await newUser.generateAndSaveAuthTokenWithAccess('auth')

@@ -1,10 +1,9 @@
 const Book = require('../models/book')
-const router = require('express').Router()
 const mongoose = require('mongoose')
+const User = require('../models/user')
 
-
-router
-    .post('/book', async (req, res) => {
+module.exports = {
+    saveBook: async (req, res) => {
         var book = new Book()
         book.name = req.body.name
         book.price = req.body.price
@@ -17,8 +16,7 @@ router
             await book.save()
             res.json(book)
         } catch (err) {
-            res.json({ err: err.message })
+            res.json({err: err.message})
         }
-    })
-
-module.exports = router
+    }
+}
