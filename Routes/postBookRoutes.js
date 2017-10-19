@@ -1,6 +1,6 @@
 const router = require('express').Router()
-const books = require('../controllers/books')
+const postABook = require('../controllers/SaveTextBook')
 
-router.post('/books', books.saveBook)
+router.post('/books', postABook.saveBook)
 
 module.exports = router

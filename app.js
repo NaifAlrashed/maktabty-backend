@@ -1,6 +1,5 @@
 const express = require("express")
 const bodyParser = require("body-parser")
-const users = require("./controllers/users")
 const books = require("./Routes/postBookRoutes")
 const auth = require("./controllers/authController")
 const passport = require('passport')
@@ -13,7 +12,6 @@ const startApp = () => {
     app
         .use(bodyParser.json())
         .use(passport.initialize())
-        .use(users)
         .use(books)
         .use(auth)
 

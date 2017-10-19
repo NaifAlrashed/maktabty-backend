@@ -82,7 +82,7 @@ module.exports = {
             await course.save()
             req.course = course
             return next()
-        } catch {
+        } catch(err) {
             return res.status(500).json({
                 humanMessage: "couldn't save either course or department",
                 message: err.message
