@@ -9,10 +9,10 @@ const universitySchema = new Schema({
 		unique: true,
 		required: 'the university name is needed'
 	},
-	departments: {
-		type: [Schema.ObjectId],
+	departments: [{
+		type: Schema.ObjectId,
 		ref: 'department'
-	}
+	}]
 })
 
 universitySchema.plugin(mongooseErrorHandler)

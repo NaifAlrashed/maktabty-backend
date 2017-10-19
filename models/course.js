@@ -11,10 +11,10 @@ const courseSchema = new Schema({
 		ref: 'department',
 		required: 'a department is needed for the course'
 	},
-	book: {
-		type: [Schema.ObjectId],
+	books: [{
+		type: Schema.ObjectId,
 		ref: 'book'
-	}
+	}]
 })
 
 const Course = mongoose.model('course', courseSchema)

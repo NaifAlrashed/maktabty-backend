@@ -11,10 +11,10 @@ bookSchema = new Schema({
 		type: Number,
 		required: 'price is required',
 	},
-	pictures: {
-		type: [String],
+	pictures: [{
+		type: String,
 		required: 'at least one picture is required'
-	},
+	}],
 	description: {
 		type: String,
 		required: 'the description is needed'
@@ -28,10 +28,10 @@ bookSchema = new Schema({
 		ref: 'user',
 		required: 'the seller info is required'
 	},
-	courses: {
-		type: [Schema.ObjectId],
+	courses: [{
+		type: Schema.ObjectId,
 		ref: 'course'		
-	}
+	}]
 
 })
 

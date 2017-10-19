@@ -1,16 +1,31 @@
 const Department = require('../models/department')
 
 module.exports = {
-    saveDepartment: async (req, res) => {
-        var department = new Department()
-        department.name = req.body.name
-        department.courses.push(req.body.course)
-        department.university = req.body.university
+    saveDepartment: async (req, res, next) => {
         try {
-            await department.save()
-            req.departmentId = department._id
+            const department = await Department.findOne({name: req.body.department.name})
+
+            if (department && department.university === req.university._id) {
+                req.department = department
+                return next()
+            }
+
         } catch (err) {
             res.status(500).json({message: err.message})
+        }
+
+        try {
+            var department = new Department()
+            department.name = req.body.department.name
+            department.university = req.university._id
+            req.university.departments.push(department._id)
+            await req.university.save()
+            req.department = department
+        } catch (err) {
+            res.status(500).json({
+                humanMessage: "couldn't save university",
+                message: err.message
+            })
         }
 
     },
