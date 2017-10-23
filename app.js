@@ -3,7 +3,7 @@ const bodyParser = require("body-parser")
 const books = require("./Routes/postBookRoutes")
 const auth = require("./controllers/authController")
 const passport = require('passport')
-const passportConfig = require('./middleware/authConfig/passportConfig')
+const passportConfig = require('./middleware/passportConfig')
 
 const app = express()
 

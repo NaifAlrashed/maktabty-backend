@@ -4,109 +4,64 @@
 const University = require('../models/university')
 const Department = require('../models/department')
 const Book = require('../models/book')
+const Course = require('../models/course')
 
 module.exports = {
 
-    saveUniversity: async (req, res, next) => {
-        try {
-            const university = await University.findOne({ name: req.body.university.name})
-            if (university) {
-                req.univerdity = university
-                return next()
-            }
-        } catch(err) {
-            res.status(500).json({
-                humanMessage: "couldn't load university",
-                message: err.message
-            })
-        }
-        var university = new University()
-        university.name = req.body.university.name
-        req.university = university
-        next()
+    doesUniversityExist: async (university) => await University.findOne({name: university.name}),
+
+    saveUniversity: async (university) => {
+        var university = new University({name: university.name})
+        await university.save()
+        return university
     },
 
-    saveDepartment: async (req, res, next) => {
-        try {
-            const department = await Department.findOne({name: req.body.department.name})
+    doesDepartmentExist: async (department, universityId) =>
+        await Department.findOne({
+            name: department.name,
+            university: universityId
+        }),
 
-            if (department && department.university === req.university._id) {
-                req.department = department
-                return next()
-            }
-
-        } catch (err) {
-            res.status(500).json({message: err.message})
-        }
-
-        try {
-            var department = new Department()
-            department.name = req.body.department.name
-            department.university = req.university._id
-            req.university.departments.push(department._id)
-            await req.university.save()
-            req.department = department
-        } catch (err) {
-            res.status(500).json({
-                humanMessage: "couldn't save university",
-                message: err.message
-            })
-        }
-
+    saveDepartment: async (department, universityId) => {
+        const departemnt = new Department({
+            name: department.name,
+            university: universityId
+        })
+        await department.save()
+        return department
     },
 
-    saveCourse: async (req, res, next) => {
-        try {
-            const course = await Course.findOne({courseCodeEN: req.body.course.courseCodeEN})
+    doesCourseExist: async (course, departmentId) =>
+        await Course.findOne({
+            courseCodeAR: course.courseCodeAR,
+            courseCodeEN: course.courseCodeEN,
+            courseNameAR: course.courseNameAR,
+            courseNameEN: course.courseNameEN,
+            department: departmentId
+        }),
 
-            if (course && course.department === req.department._id) {
-                req.course = course
-                return next()
-            }
-        } catch (err) {
-            return res.status(500).json({
-                humanMessage: "couldn't load courses",
-                message: err.message
-            })
-        }
-
-        try {
-            var course = new Course()
-            course.courseCodeAR = req.body.course.courseCodeAR
-            course.courseCodeEN = req.body.course.courseCodeEN
-            course.courseNameAR = req.body.course.courseNameAR
-            course.courseNameEN = req.body.course.courseNameEN
-            req.department.courses.push(course._id)
-            course.department = req.department._id
-            await req.department.save()
-            await course.save()
-            req.course = course
-            return next()
-        } catch(err) {
-            return res.status(500).json({
-                humanMessage: "couldn't save either course or department",
-                message: err.message
-            })
-        }
+    saveCourse: async (course, departmentId) => {
+        const newCourse = new Course({
+            courseCodeAR: course.courseCodeAR,
+            courseCodeEN: course.courseCodeEN,
+            courseNameAR: course.courseNameAR,
+            courseNameEN: course.courseNameEN,
+            department: departmentId
+        })
+        await newCourse.save()
+        return newCourse
     },
 
-    saveBook: async (req, res) => {
-        try {
-            var book = new Book()
-            book.name = req.body.book.name
-            book.price = req.body.book.price
-            book.pictures.push(req.body.book.picture)
-            book.description = req.body.book.description
-            book.contactInfo = req.body.book.contactInfo
-            book.seller = req.body.userId
-            //TODO: add user id to the book (i don't know how the userid will look like in the request yet)
-            book.courses.push(req.course._id)
-            req.course.books.push(book._id)
-            await req.course.save()
-            await book.save()
-            res.json(book)
-        } catch (err) {
-            res.json({err: err.message})
-        }
+    saveBook: async (book, sellerId, coursesIds) => {
+        const newBook = new Book ({
+            name: book.name,
+            price: book.price,
+            pictures: book.pictures,
+            description: book.description,
+            seller: sellerId,
+            courses: coursesIds
+        })
+        await newBook.save()
+        return newBook
     }
 }

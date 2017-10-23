@@ -20,7 +20,10 @@ userSchema = new Schema({
 		required: true,
 		minLength: 6
 	},
-
+    contactInfo: {
+        type: String,
+        required: 'contact info is needed'
+    },
 	tokens: [{
 		access: {
 			type: String,

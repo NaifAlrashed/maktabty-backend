@@ -19,10 +19,6 @@ bookSchema = new Schema({
 		type: String,
 		required: 'the description is needed'
 	},
-	contactInfo: {
-		type: String,
-		required: 'contact info is needed'
-	},
 	seller: {
 		type: Schema.ObjectId,
 		ref: 'user',
