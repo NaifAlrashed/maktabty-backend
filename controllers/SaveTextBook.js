@@ -10,10 +10,14 @@ module.exports = {
 
     doesUniversityExist: async (university) => await University.findOne({name: university.name}),
 
-    saveUniversity: async (university) => {
-        var university = new University({name: university.name})
-        await university.save()
-        return university
+    saveUniversity: async (university) => {        
+        try {
+            var university = new University({name: university.name})    
+            await university.save()
+            return university
+        } catch (err) {
+            return null
+        }
     },
 
     doesDepartmentExist: async (department, universityId) =>
@@ -23,12 +27,12 @@ module.exports = {
         }),
 
     saveDepartment: async (department, universityId) => {
-        const departemnt = new Department({
+        var newDepartment = new Department({
             name: department.name,
             university: universityId
         })
-        await department.save()
-        return department
+        await newDepartment.save()
+        return newDepartment
     },
 
     doesCourseExist: async (course, departmentId) =>
@@ -52,16 +56,23 @@ module.exports = {
         return newCourse
     },
 
-    saveBook: async (book, sellerId, coursesIds) => {
+    saveBook: async (book, seller, course) => {
         const newBook = new Book ({
             name: book.name,
             price: book.price,
             pictures: book.pictures,
             description: book.description,
-            seller: sellerId,
-            courses: coursesIds
+            seller: seller._id,
         })
+        newBook.courses.push(course._id)
         await newBook.save()
+
+        seller.books.push(newBook._id)
+        await seller.save()
+
+        course.books.push(newBook._id)
+        await course.save()
+
         return newBook
     }
 }

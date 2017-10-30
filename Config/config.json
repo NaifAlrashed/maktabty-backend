@@ -1,12 +1,12 @@
 {
   "test": {
     "PORT": 3000,
-    "MONGO_URI": "",
+    "MONGO_URI": "mongodb://localhost:27017/maktabtyTest",
     "JWT_SECRET": "diejfwinifwqionqidfenqwdjfeinqwifedsfjnjdfnvdjdfns"
   },
   "development": {
     "PORT": 3000,
-    "MONGO_URI": "mongodb://localhost:27017/maktabtyTest",
+    "MONGO_URI": "mongodb://localhost:27017/maktabtyDevelopment",
     "JWT_SECRET": "diejfwinifwqionqidfenqwdjfeinqwifedsfjnjdfnvdjdfns"
   }
 }

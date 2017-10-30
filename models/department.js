@@ -5,16 +5,16 @@ const Schema = mongoose.Schema
 departmentSchema = Schema ({
 	name: {
 		type: String,
-		required: true
+		required: 'department name is required'
 	},
 	courses: [{
 		type: Schema.Types.ObjectId,
-		ref: 'user'
+		ref: 'course'
 	}],
 	university: {
-		type: Schema.ObjectId,
+		type: Schema.Types.ObjectId,
 		ref: 'university',
-		required: true
+		required: 'university ID is required'
 	}
 })
 

@@ -34,6 +34,10 @@ userSchema = new Schema({
 			required: true
 		}
 		//TODO: create iat & exp fields in token obj
+	}],
+	books: [{
+		type: Schema.Types.ObjectId,
+		ref: 'book'
 	}]
 })
 
