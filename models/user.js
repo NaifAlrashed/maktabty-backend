@@ -17,7 +17,7 @@ userSchema = new Schema({
 	},
 	password: {
 		type: String,
-		required: true,
+		required: 'password with minimum length of 6 characters is needed',
 		minLength: 6
 	},
     contactInfo: {
@@ -48,7 +48,6 @@ userSchema.methods.generateAndSaveAuthTokenWithAccess = async function (access) 
         iat: Date.now(),
         exp: new Date().setDate(new Date().getDate() + 1)
 	}, process.env.JWT_SECRET).toString()
-	console.log('token', token)
 	this.tokens.push({access, token})
 	await this.save()
 	return token
