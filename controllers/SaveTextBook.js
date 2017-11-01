@@ -1,5 +1,5 @@
 //Description: this file handles the event of posting a book.
-//the flow was designed through the following way: saveUniversity -> saveDepartment -> saveCourse -> saveBook
+//the flow was designed through the following way: saveIfNotExistUniversity -> saveIfNotExistDepartment -> saveIfNotExistCourse -> saveBook
 
 const University = require('../models/university')
 const Department = require('../models/department')
@@ -8,34 +8,70 @@ const Course = require('../models/course')
 
 module.exports = {
 
-    doesUniversityExist: async (university) => await University.findOne({name: university.name}),
+    getUniversityByName: async (universityName) => await University.findOne({name: universityName}),
 
-    saveUniversity: async (university) => {        
+    saveUniversityIfNotExist: async (someUniversity) => {
         try {
-            var university = new University({name: university.name})    
+            var university = new University({name: someUniversity.name})    
             await university.save()
-            return university
+            return {
+                university,
+                errorCode: null
+            }
         } catch (err) {
-            return null
+            if (err.name === 'MongoError' && err.code === 11000) { //for duplicate
+                const universitySearched = await module.exports.getUniversityByName(someUniversity.name)
+                return {
+                    university: universitySearched,
+                    errorCode: null
+                }
+            } else if (err.name === 'ValidationError') {
+                return {
+                    university: null,
+                    errorCode: err.errors[Object.keys(err.errors)[0]].message
+                }
+            }
+            throw err
         }
     },
 
-    doesDepartmentExist: async (department, universityId) =>
+    getDepartmentbyName: async (departmentName, universityId) =>
         await Department.findOne({
-            name: department.name,
+            name: departmentName,
             university: universityId
         }),
 
-    saveDepartment: async (department, universityId) => {
+    saveDepartmentIfNotExist: async (department, university) => {
         var newDepartment = new Department({
             name: department.name,
-            university: universityId
+            university: university._id
         })
-        await newDepartment.save()
-        return newDepartment
+        try {
+            await newDepartment.save()
+            university.departments.push(newDepartment._id)
+            await university.save()
+            return {
+                department: newDepartment,
+                errorCode: null
+            }
+        } catch(err) {
+            if (err.name === 'MongoError' && err.code === 11000) { //for duplicate
+                const departmentSearched = await module.exports.getDepartmentbyName(department.name, university._id)
+                return {
+                    department: departmentSearched,
+                    errorCode: null
+                }
+            } else if (err.name === 'ValidationError') {
+                return {
+                    department: null,
+                    errorCode: err.errors[Object.keys(err.errors)[0]].message
+                }
+            }
+            throw err
+        }        
     },
 
-    doesCourseExist: async (course, departmentId) =>
+    getCourse: async (course, departmentId) =>
         await Course.findOne({
             courseCodeAR: course.courseCodeAR,
             courseCodeEN: course.courseCodeEN,
@@ -44,16 +80,39 @@ module.exports = {
             department: departmentId
         }),
 
-    saveCourse: async (course, departmentId) => {
+    saveCourseIfNotExist: async (course, department) => {
         const newCourse = new Course({
             courseCodeAR: course.courseCodeAR,
             courseCodeEN: course.courseCodeEN,
             courseNameAR: course.courseNameAR,
             courseNameEN: course.courseNameEN,
-            department: departmentId
+            department: department._id
         })
-        await newCourse.save()
-        return newCourse
+
+        try {
+            await newCourse.save()
+            department.courses.push(newCourse._id)
+            await department.save()
+            return {
+                course: newCourse,
+                errorCode: null
+            }
+        } catch(err) {
+            if (err.name === 'MongoError' && err.code === 11000) { //for duplicate
+                const courseSearched = await module.exports.getCourse(course, department._id)
+                return {
+                    course: courseSearched,
+                    errorCode: null
+                }
+            } else if (err.name === 'ValidationError') {
+                return {
+                    course: null,
+                    errorCode: err.errors[Object.keys(err.errors)[0]].message
+                }
+            }
+            throw err
+        }
+
     },
 
     saveBook: async (book, seller, course) => {

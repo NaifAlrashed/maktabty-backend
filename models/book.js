@@ -31,6 +31,4 @@ bookSchema = new Schema({
 
 })
 
-bookSchema.plugin(mongooseErrorHandler)
-
 module.exports = mongoose.model('book', bookSchema)

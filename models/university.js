@@ -7,14 +7,12 @@ const universitySchema = new Schema({
 	name: {
 		type: String,
 		unique: true,
-		required: 'the university name is needed'
+		required: '1'//'the university name is needed'
 	},
 	departments: [{
 		type: Schema.ObjectId,
 		ref: 'department'
 	}]
 })
-
-universitySchema.plugin(mongooseErrorHandler)
 
 module.exports = mongoose.model('university', universitySchema)

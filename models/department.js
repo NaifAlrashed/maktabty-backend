@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const mongooseErrorHandler = require('mongoose-mongodb-errors')
 const Schema = mongoose.Schema
 
 departmentSchema = Schema ({
@@ -18,6 +17,6 @@ departmentSchema = Schema ({
 	}
 })
 
-departmentSchema.plugin(mongooseErrorHandler)
+departmentSchema.index({name: 1, university: 1}, { unique: true })
 
 module.exports = mongoose.model('department', departmentSchema)
