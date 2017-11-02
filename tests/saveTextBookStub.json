@@ -1,0 +1,18 @@
+ {
+    "university": {
+        "name": "King Fahad University of Petrolium and Menirals"
+    },
+    "department": {
+        "name": "Engineering"
+    },
+    "course": {
+        "courseNameEN": "Programming for Engineers",
+        "courseCodeEN": "SE 120"
+    },
+    "book": {
+        "name": "Introduction to Java Programming",
+        "price": 200,
+        "pictures": ["kdnwdnwi", "kdwnidnwi"],
+        "description": "this book is great, pls buy"
+    }
+ }

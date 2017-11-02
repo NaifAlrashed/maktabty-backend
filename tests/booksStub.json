@@ -1,0 +1,39 @@
+{    
+    "books": [
+    	{
+            "name": "Introduction to Java Programming",
+            "price": 200,
+            "pictures": ["kdnwdnwi", "kdwnidnwi"],
+            "description": "this book is great, pls buy",
+            "courses": []
+        },
+        {
+            "name": "Introduction to Programming",
+            "price": 200,
+            "pictures": ["kdnwdnwi", "kdwnidnwi"],
+            "description": "this book is great, pls buy",
+            "courses": []
+        },
+        {
+            "name": "Introduction to Algorithms",
+            "price": 200,
+            "pictures": ["kdnwdnwi", "kdwnidnwi"],
+            "description": "this book is great, pls buy",
+            "courses": []
+        },
+        {
+            "name": "Algorithms and datastructures",
+            "price": 200,
+            "pictures": ["kdnwdnwi", "kdwnidnwi"],
+            "description": "this book is great, pls buy",
+            "courses": []
+        },
+        {
+            "name": "Design and Analysis of algorithms",
+            "price": 200,
+            "pictures": ["kdnwdnwi", "kdwnidnwi"],
+            "description": "this book is great, pls buy",
+            "courses": []
+        }
+    ]
+}
