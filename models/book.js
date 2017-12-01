@@ -26,7 +26,7 @@ bookSchema = new Schema({
 	},
 	courses: [{
 		type: Schema.ObjectId,
-		ref: 'course'		
+		ref: 'resource'
 	}]
 
 })

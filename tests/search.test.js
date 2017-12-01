@@ -4,7 +4,7 @@ const chaiThings = require('chai-things')
 const search = require('../controllers/search')
 const books = require('./booksStub.json').books
 const Book = require('../models/book')
-const saveTextBook = require('../controllers/SaveTextBook')
+const saveTextBook = require('../controllers/saveTextBook')
 const body = require('./saveTextBookStub.json')
 const User = require('../models/user')
 const Department = require('../models/department')
@@ -24,10 +24,10 @@ describe('search', () => {
 		before( async () => {
 			let user, course
 			const obj = await saveTextBook.saveUniversityIfNotExist(body.university)			
-			const university = obj.university
+			const university = obj.resource
 			const departmentObj = await saveTextBook.saveDepartmentIfNotExist(body.department, university)
-			const courseObj = await saveTextBook.saveCourseIfNotExist(body.course, departmentObj.department)
-			course = courseObj.course			
+			const courseObj = await saveTextBook.saveCourseIfNotExist(body.course, departmentObj.resource)
+			course = courseObj.resource
 			
 			user = new User(someUser)
 			await user.save()
@@ -48,10 +48,11 @@ describe('search', () => {
 
 		it('should have three results, all of which include introduction as the name of the book', async () => {
 			const result = await search.bookSearch('introduction')
-			assert(result.length === 3)
-			assert(result[0].name.match(/introduction/i))
-			assert(result[1].name.match(/introduction/i))
-			assert(result[2].name.match(/introduction/i))
+			const resource = result.resource
+			assert(resource.length === 3)
+			assert(resource[0].name.match(/introduction/i))
+			assert(resource[1].name.match(/introduction/i))
+			assert(resource[2].name.match(/introduction/i))
 		})
 	})
 	after(async () => {

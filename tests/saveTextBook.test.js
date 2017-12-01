@@ -5,13 +5,14 @@ var assert = chai.assert
 const chaiThings = require('chai-things')
 const mongoose = require('mongoose')
 const body = require('./saveTextBookStub.json')
-const saveTextBook = require('../controllers/SaveTextBook')
+const saveTextBook = require('../controllers/saveTextBook')
 const University = require('../models/university')
 const Department = require('../models/department')
 const Course = require('../models/course')
 const User = require('../models/user')
 const someUser = require('./userStub.json')
 const Book = require('../models/book')
+const responseTyps = require('../controllers/responseTypes')
 chai.should()
 chai.use(chaiThings)
 
@@ -28,22 +29,22 @@ describe('save text book', () => {
 		describe('saveUniversityIfNotExist(university)', () => {			
 
 			it('should save university', async () => {
-		    	const obj = await saveTextBook.saveUniversityIfNotExist(body.university)
-		    	assert(obj.university && !obj.errorCode)
+		    	const result = await saveTextBook.saveUniversityIfNotExist(body.university)
+		    	assert(result.resource && (result.type === responseTyps.RESOURCE_CREATED))
 			})
 
 			it('should not retrieve university from db, and not save', async () => {			
 				const firstUniversity = await saveTextBook.saveUniversityIfNotExist(body.university)
-				const obj = await saveTextBook.saveUniversityIfNotExist(body.university)
+				const result = await saveTextBook.saveUniversityIfNotExist(body.university)
 
-				assert(obj.university && !obj.errorCode, "expected to find a university and an error of null")
-				assert(firstUniversity.university._id.equals(obj.university._id), "did not retrieve university from db")
+				assert(result.resource && (result.type === responseTyps.RESOURCE_FOUND), "expected to find a university and an error of null")
+				assert(firstUniversity.resource._id.equals(result.resource._id), "did not retrieve university from db")
 
 			})
 
 			it('should not save university because of missing attributes', async () => {			
-				const obj = await saveTextBook.saveUniversityIfNotExist(body)
-				assert(obj.errorCode == 1 && !obj.university)
+				const result = await saveTextBook.saveUniversityIfNotExist(body)
+				assert(result.type === responseTyps.VALIDATION_ERROR && result.err)
 			})
 
 		})
@@ -70,7 +71,7 @@ describe('save text book', () => {
 
 		before(async () => {
 			const universityy = await saveTextBook.saveUniversityIfNotExist(body.university)
-			university = universityy.university
+			university = universityy.resource
 		})
 
 		beforeEach(async () => {
@@ -79,20 +80,20 @@ describe('save text book', () => {
 
 		describe('saveDepartmentIfNotExist(department, university)', () => {
 			it('should save department and its reference in university', async () => {
-				const obj = await saveTextBook.saveDepartmentIfNotExist(body.department, university)
-				assert(obj.department.university.equals(university._id), 'there is no university reference in department')
-				assert(university.departments.should.include(obj.department._id), 'department is not in saved in university')
+				const result = await saveTextBook.saveDepartmentIfNotExist(body.department, university)
+				assert(result.resource.university.equals(university._id), 'there is no university reference in department')
+				assert(university.departments.should.include(result.resource._id), 'department is not in saved in university')
 			})
 
 			it('should retrieve department from db', async () => {
-				const obj = await saveTextBook.saveDepartmentIfNotExist(body.department, university)
+				const result = await saveTextBook.saveDepartmentIfNotExist(body.department, university)
 				const departmentObj = await saveTextBook.saveDepartmentIfNotExist(body.department, university)
-				assert(obj.department._id.equals(departmentObj.department._id))
+				assert(result.resource._id.equals(departmentObj.resource._id))
 			})
 
 			it('should not save university because of missing attributes', async () => {
 				const obj = await saveTextBook.saveUniversityIfNotExist(body)				
-				assert(obj.errorCode == 1 && !obj.university)
+				assert(obj.type === responseTyps.VALIDATION_ERROR && obj.err)
 			})
 		})
 
@@ -113,25 +114,27 @@ describe('save text book', () => {
 	describe('course operations', () => {
 		let department;
 		before(async () => {
-			const university = await University.findOne({})
+			const university = await University.findOne()
 			const someDepartment = await saveTextBook.saveDepartmentIfNotExist(body.department, university)
-			department = someDepartment.department
+			department = someDepartment.resource
 		})
 
 		beforeEach(async () => {
-			await Course.remove({})
+			await Course.remove()
+
 		})
 
 		describe('saveCourseIfNotExist(course, department)', () => {
 			it('should save course', async () => {
-				const course = await saveTextBook.saveCourseIfNotExist(body.course, department)
-				assert(course.course && !course.errCode)
+				const result = await saveTextBook.saveCourseIfNotExist(body.course, department)
+				assert(result.resource && result.type === responseTyps.RESOURCE_CREATED)
 			})
 
 			it('should not save course to db, and query it instead', async () => {
-				const savedCourse = await saveTextBook.saveCourseIfNotExist(body.course, department)
-				const retrievedCourse = await saveTextBook.saveCourseIfNotExist(body.course, department)
-				assert(savedCourse.course._id.equals(retrievedCourse.course._id), 'the course is not retrieved from db')
+				const savedCourseResult = await saveTextBook.saveCourseIfNotExist(body.course, department)
+				const retrievedCourseResult = await saveTextBook.saveCourseIfNotExist(body.course, department)
+
+				assert(savedCourseResult.resource._id.equals(retrievedCourseResult.resource._id), 'the course is not retrieved from db')
 			})
 		})
 
@@ -154,8 +157,8 @@ describe('save text book', () => {
 		before(async () => {
 			const university = await University.findOne({})
 			const departmentObj = await saveTextBook.saveDepartmentIfNotExist(body.department, university)
-			const courseObj = await saveTextBook.saveCourseIfNotExist(body.course, departmentObj.department)
-			course = courseObj.course
+			const courseObj = await saveTextBook.saveCourseIfNotExist(body.course, departmentObj.resource)
+			course = courseObj.resource
 			
 			user = new User(someUser)
 			await user.save()
@@ -163,14 +166,14 @@ describe('save text book', () => {
 
 		describe('saveBook(book)', () => {
 			it('should save book', async () => {
-				const book = await saveTextBook.saveBook(body.book, user, course)
-				//book and course relationship checking
-				assert(book.courses.should.include(course._id), 'book doesnt include the course')
-				assert(course.books.should.include(book._id), 'course doesnt include the book')
+				const result = await saveTextBook.saveBook(body.book, user, course)
+				//book and resource relationship checking
+				assert(result.resource.courses.should.include(course._id), 'book doesnt include the resource')
+				assert(course.books.should.include(result.resource._id), 'resource doesnt include the book')
 
 				//book & user relationship checking
-				assert(book.seller == user._id, "book seller id (in book obj) doesn't match the user id")
-				assert(user.books.should.include(book._id), 'user doesnt include the book')
+				assert(result.resource.seller == user._id, "book seller id (in book obj) doesn't match the user id")
+				assert(user.books.should.include(result.resource._id), 'user doesnt include the book')
 			})
 		})
 

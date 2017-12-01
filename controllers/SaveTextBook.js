@@ -5,33 +5,23 @@ const University = require('../models/university')
 const Department = require('../models/department')
 const Book = require('../models/book')
 const Course = require('../models/course')
-
+const types = require('./responseTypes')
+const save = require('./save')
+const resourceFactory = require('./resourceFactory')
+var MONGO_DUPLICATION_ERROR = 11000
 module.exports = {
 
     getUniversityByName: async (universityName) => await University.findOne({name: universityName}),
 
     saveUniversityIfNotExist: async (someUniversity) => {
-        try {
-            var university = new University({name: someUniversity.name})    
-            await university.save()
-            return {
-                university,
-                errorCode: null
-            }
-        } catch (err) {
-            if (err.name === 'MongoError' && err.code === 11000) { //for duplicate
-                const universitySearched = await module.exports.getUniversityByName(someUniversity.name)
-                return {
-                    university: universitySearched,
-                    errorCode: null
-                }
-            } else if (err.name === 'ValidationError') {
-                return {
-                    university: null,
-                    errorCode: err.errors[Object.keys(err.errors)[0]].message
-                }
-            }
-            throw err
+        var university = new University({name: someUniversity.name})
+        const result = await save(university)
+
+        if (result.type === types.DUPLICATION_ERROR) {
+            const universitySearched = await module.exports.getUniversityByName(someUniversity.name)
+            return resourceFactory(universitySearched, types.RESOURCE_FOUND, null)
+        } else {
+            return result
         }
     },
 
@@ -46,29 +36,16 @@ module.exports = {
             name: department.name,
             university: university._id
         })
-        try {
-            await newDepartment.save()
+        const departmentResult = await save(newDepartment)
+
+        if(departmentResult.type === types.DUPLICATION_ERROR) {
+            const departmentSearched = await module.exports.getDepartmentbyName(department.name, university._id)
+            return resourceFactory(departmentSearched, types.RESOURCE_FOUND, null)
+        } else {
             university.departments.push(newDepartment._id)
-            await university.save()
-            return {
-                department: newDepartment,
-                errorCode: null
-            }
-        } catch(err) {
-            if (err.name === 'MongoError' && err.code === 11000) { //for duplicate
-                const departmentSearched = await module.exports.getDepartmentbyName(department.name, university._id)
-                return {
-                    department: departmentSearched,
-                    errorCode: null
-                }
-            } else if (err.name === 'ValidationError') {
-                return {
-                    department: null,
-                    errorCode: err.errors[Object.keys(err.errors)[0]].message
-                }
-            }
-            throw err
-        }        
+            await save(university)
+            return departmentResult
+        }
     },
 
     getCourse: async (course, departmentId) =>
@@ -89,30 +66,17 @@ module.exports = {
             department: department._id
         })
 
-        try {
-            await newCourse.save()
-            department.courses.push(newCourse._id)
-            await department.save()
-            return {
-                course: newCourse,
-                errorCode: null
-            }
-        } catch(err) {
-            if (err.name === 'MongoError' && err.code === 11000) { //for duplicate
-                const courseSearched = await module.exports.getCourse(course, department._id)
-                return {
-                    course: courseSearched,
-                    errorCode: null
-                }
-            } else if (err.name === 'ValidationError') {
-                return {
-                    course: null,
-                    errorCode: err.errors[Object.keys(err.errors)[0]].message
-                }
-            }
-            throw err
+        courseResult = await save(newCourse)
+        if (courseResult.type === types.DUPLICATION_ERROR) {
+            const courseSearched = await module.exports.getCourse(newCourse, department._id)
+            return resourceFactory(courseSearched, types.RESOURCE_FOUND, null)
+        } else if (courseResult.type === types.VALIDATION_ERROR) {
+            return courseResult
         }
+        department.courses.push(newCourse._id)
+        departmentResult = await save(department)
 
+        return courseResult
     },
 
     saveBook: async (book, seller, course) => {
@@ -124,14 +88,15 @@ module.exports = {
             seller: seller._id,
         })
         newBook.courses.push(course._id)
-        await newBook.save()
+        bookPromise = save(newBook)
 
         seller.books.push(newBook._id)
-        await seller.save()
+        sellerPromise = save(seller)
 
         course.books.push(newBook._id)
-        await course.save()
+        coursePromise = save(course)
 
-        return newBook
+        const [bookResult, SellerResult, courseResult] = await Promise.all([bookPromise, sellerPromise, coursePromise])
+        return bookResult
     }
 }

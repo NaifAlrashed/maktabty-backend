@@ -7,7 +7,9 @@
     },
     "course": {
         "courseNameEN": "Programming for Engineers",
-        "courseCodeEN": "SE 120"
+        "courseCodeEN": "SE 120",
+        "courseNameAR": "مدخل إلى البرمجة للمهندسين",
+        "courseCodeAR": "هاب ١٢٠"
     },
     "book": {
         "name": "Introduction to Java Programming",

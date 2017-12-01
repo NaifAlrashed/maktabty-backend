@@ -1,4 +1,4 @@
-const saveTextBookBehavior = require('../controllers/SaveTextBook')
+const saveTextBookBehavior = require('../controllers/saveTextBook')
 
 module.exports = {
     saveUniverityIfNotExist: async (req, res, next) => {
@@ -20,9 +20,9 @@ module.exports = {
     },
 
     saveCourseIfNotExist: async (req, res, next) => {
-        let course = await saveTextBookBehavior.doesCourseExist(req.body.course, req.departmentId)
+        let course = await saveTextBookBehavior.doesCourseExist(req.body.resource, req.departmentId)
         if (!course) {
-            course = await saveTextBookBehavior.saveCourse(req.body.course, req.departmentId)
+            course = await saveTextBookBehavior.saveCourse(req.body.resource, req.departmentId)
         }
         req.courseId = course._id
         next()

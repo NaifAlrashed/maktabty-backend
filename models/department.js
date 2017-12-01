@@ -8,7 +8,7 @@ departmentSchema = Schema ({
 	},
 	courses: [{
 		type: Schema.Types.ObjectId,
-		ref: 'course'
+		ref: 'resource'
 	}],
 	university: {
 		type: Schema.Types.ObjectId,
