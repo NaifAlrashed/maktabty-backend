@@ -3,7 +3,7 @@ const resourceFactory = require('./resourceFactory')
 const responseType = require('./responseTypes')
 
 module.exports = {
-	bookSearch: async (searchTerm, page) => {
+	book: async (searchTerm, page) => {
 		limit = 10
 		skip = (page * limit) - limit
 		const regExpdSearchedTerm = new RegExp(searchTerm, 'i')
