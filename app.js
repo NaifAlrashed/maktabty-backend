@@ -1,9 +1,10 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const books = require("./Routes/postBookRoutes")
-const auth = require("./controllers/authController")
+const authRouter = require("./routes/authRoutes")
 const passport = require('passport')
 const passportConfig = require('./middleware/passportConfig')
+const exceptionResponse = require('./middleware/errorMiddleWare')
 
 const app = express()
 
@@ -13,7 +14,8 @@ const startApp = () => {
         .use(bodyParser.json())
         .use(passport.initialize())
         .use(books)
-        .use(auth)
+        .use('/api', authRouter)
+        .use(exceptionResponse)
 
     app.listen(3030)
 }
