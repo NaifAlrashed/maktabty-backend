@@ -59,10 +59,8 @@ describe('search', () => {
 			const firstResult = await search.book('design', 1)
 			const secondResult = await search.book('design', 2)
 
-			console.log(secondResult)
-			assert(firstResult.length === 10)
-			assert(secondResult.length === 10)
-			assert(thirdRsult.length === 2)
+			assert(firstResult.resource.length === 10)
+			assert(secondResult.resource.length === 1)
 		})
 	})
 	after(async () => {
