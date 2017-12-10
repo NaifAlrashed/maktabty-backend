@@ -9,8 +9,8 @@ module.exports = {
     signup: async (user, access) => {
         const newUser = new User(user)        
         try {
-            await newUser.generateAndSaveAuthTokenWithAccess(access)
-            return resourceFactory(newUser, responseTypes.RESOURCE_CREATED, null)
+            const token = await newUser.generateAndSaveAuthTokenWithAccess(access)
+            return resourceFactory(token, responseTypes.SIGNUP_SUCCESS, null)
         } catch (err) {
             if (mongooseError.isduplicationError(err)) {
                 return resourceFactory(newUser, responseTypes.DUPLICATION_ERROR, err)

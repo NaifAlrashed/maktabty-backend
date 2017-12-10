@@ -49,6 +49,7 @@ class DuplicationError {
 	}
 
 	response() {
+		console.log(this.err)
 		//TODO: create a better validation message
 		if (this.customMessage === "") {
 			return { error_message: 'duplication' }
@@ -56,6 +57,18 @@ class DuplicationError {
 			return { error_message: customMessage }
 		}
 		
+	}
+}
+
+class SignupSuccess {
+	constructor(token) {
+		this.type = resourceTypes.SIGNUP_SUCCESS
+		this.status = 201
+		this.token = token
+	}
+
+	response() {
+		return { token: this.token }
 	}
 }
 
@@ -69,6 +82,8 @@ module.exports = (resource, type, err) => {
 			return new ResourceCreated(resource)
 		case resourceTypes.RESOURCE_FOUND:
 			return new ResourceFound(resource)
+		case resourceTypes.SIGNUP_SUCCESS:
+			return new SignupSuccess(resource)
 		default:
 			throw new Error("type not supported")
 	}
