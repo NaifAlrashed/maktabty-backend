@@ -41,8 +41,7 @@ userSchema = new Schema({
 	}],
 	bookmarks: [{
 		type: Schema.Types.ObjectId,
-		ref: 'book',
-		unique: 'this book is already in the bookmarks'
+		ref: 'book'
 	}]
 })
 
