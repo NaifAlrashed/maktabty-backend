@@ -19,6 +19,6 @@ const courseSchema = new Schema({
 
 courseSchema.index({ department: 1, courseNameAR: 1, courseNameEN: 1, courseCodeEN: 1, courseCodeAR: 1}, { unique: true })
 
-const Course = mongoose.model('resource', courseSchema)
+const Course = mongoose.model('course', courseSchema)
 
 module.exports = Course
