@@ -6,15 +6,16 @@ const bcryptjs = require('bcryptjs')
 
 module.exports = (passport) => {
     passport.use(new passportJWTStrategy({
-        jwtFromRequest: ExtractJwt.fromHeader('Authorization'),
-        secretOrKey: process.env.JWT_SECRET
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        secretOrKey: process.env.JWT_SECRET,
+        ignoreExpiration: true
     }, async (payload, done) => {
         try {
-            const user = User.findById(payload.sub)
+            const user = await User.findById(payload.sub)
             if (!user) {
                 return done(null, false)
             }
-            done(null, true)
+            done(null, user)
         } catch(err) {
             done(err, false)
         }
