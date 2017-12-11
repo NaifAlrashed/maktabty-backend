@@ -1,8 +1,8 @@
 const saveTextBookBehavior = require('../controllers/saveTextBook')
 const responseTypes = require('../controllers/responseTypes')
 
-exports.saveUniverityIfNotExist = async (req, res, next) => {
-    let universityObj = await saveTextBookBehavior.saveUniverityIfNotExist(req.body.university)
+exports.saveUniversityIfNotExist = async (req, res, next) => {
+    let universityObj = await saveTextBookBehavior.saveUniversityIfNotExist(req.body.university)
     if (isResourceSavedOrRetrieved(universityObj)) {
         req.university = universityObj.resource
         return next()
@@ -22,7 +22,7 @@ exports.saveDepartmentIfNotExist = async (req, res, next) => {
 }
 
 exports.saveCourseIfNotExist = async (req, res, next) => {
-    let courseObj = await saveTextBookBehavior.saveCourseIfNotExist(req.body.resource, req.department)
+    let courseObj = await saveTextBookBehavior.saveCourseIfNotExist(req.body.course, req.department)
     if (isResourceSavedOrRetrieved(courseObj)) {
         req.course = courseObj.resource
         return next()
