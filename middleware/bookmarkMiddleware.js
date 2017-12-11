@@ -8,5 +8,5 @@ module.exports = {
 		res.status(result.status).json(result.response())
 	},
 
-	getBookmarks: (req, res) => req.user.bookmarks
+	getBookmarks: (req, res) => res.json({ bookmarks: req.user.bookmarks })
 }
