@@ -28,7 +28,7 @@ module.exports = (passport) => {
                 return done(null, false)
             }
             //check password
-            const isSamePassword = await bcryptjs.compareSync(password, user.password)
+            const isSamePassword = await bcryptjs.compareSync(password.toString(), user.password)
             if (!isSamePassword) {
                 return done(null, false)
             }
