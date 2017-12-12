@@ -23,8 +23,9 @@ describe('authentication', () => {
 	describe('signup', () => {
 		it('should return an authenticated user with token', async () => {
 			const result = await authentication.signup(someUser, 'auth')
-			assert(!(result.type === responseTypes.DUPLICATION_ERROR), "the user is duplicate")
-			assert(result.resource, "user is null")
+			console.log(result)
+			assert(result.type === responseTypes.SIGNUP_SUCCESS, "the user is duplicate")
+			assert(result.token, "user is null")
 		})
 
 		it('should not return an authenticated user', async () => {
