@@ -22,5 +22,15 @@ module.exports = {
         }
     },
 
-    signin: async (user) => await user.generateAndSaveAuthTokenWithAccess('login')
+    signin: async (user) => await user.generateAndSaveAuthTokenWithAccess('login'),
+
+    logout: async (user, tokenToBeDeleted) => {
+        for (var i = 0; i < user.tokens.length; i++) {
+            if (user.tokens[i].token == tokenToBeDeleted.token) {
+                user.tokens.splice(i, 1)
+                await user.save()
+                return tokenToBeDeleted
+            }
+        }
+    }
 }

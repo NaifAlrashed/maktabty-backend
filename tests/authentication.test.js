@@ -23,7 +23,6 @@ describe('authentication', () => {
 	describe('signup', () => {
 		it('should return an authenticated user with token', async () => {
 			const result = await authentication.signup(someUser, 'auth')
-			console.log(result)
 			assert(result.type === responseTypes.SIGNUP_SUCCESS, "the user is duplicate")
 			assert(result.token, "user is null")
 		})
@@ -32,6 +31,19 @@ describe('authentication', () => {
 			await authentication.signup(someUser, 'auth')
 			const result = await authentication.signup(someUser, 'auth')
 			assert(result.type === responseTypes.DUPLICATION_ERROR)
+		})
+	})
+
+	describe('logout', () => {
+		it('should logout', async () => {			
+			const token = await authentication.signup(someUser, 'auth')
+			const user = await User.findOne({ email: someUser.email })
+
+			numOfTokensBeforeLogout = user.tokens.length
+			await authentication.logout(user, token)
+
+			const numOfTokensAfterLogout = numOfTokensBeforeLogout - 1
+			assert(user.tokens.length === (numOfTokensAfterLogout))
 		})
 	})
 })
