@@ -20,5 +20,7 @@ module.exports = {
                 throw err
             }
         }
-    }
+    },
+
+    signin: async (user) => await user.generateAndSaveAuthTokenWithAccess('login')
 }
