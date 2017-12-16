@@ -24,13 +24,14 @@ module.exports = {
 
     signin: async (user) => await user.generateAndSaveAuthTokenWithAccess('login'),
 
-    logout: async (user, tokenToBeDeleted) => {
-        for (var i = 0; i < user.tokens.length; i++) {
-            if (user.tokens[i].token == tokenToBeDeleted.token) {
-                user.tokens.splice(i, 1)
-                await user.save()
-                return tokenToBeDeleted
-            }
-        }
+    logout: async (user, tokenToBeDeletedId) => {
+        const index = user.findTokenIndex(tokenToBeDeletedId)
+        console.log(index)
+        if(index !== -1) {
+            user.tokens.splice(index, 1)
+            await user.save()
+            return tokenToBeDeletedId
+        }        
+        return false
     }
 }

@@ -36,14 +36,18 @@ describe('authentication', () => {
 
 	describe('logout', () => {
 		it('should logout', async () => {			
-			const token = await authentication.signup(someUser, 'auth')
+			await authentication.signup(someUser, 'auth')
 			const user = await User.findOne({ email: someUser.email })
 
-			numOfTokensBeforeLogout = user.tokens.length
-			await authentication.logout(user, token)
-
-			const numOfTokensAfterLogout = numOfTokensBeforeLogout - 1
-			assert(user.tokens.length === (numOfTokensAfterLogout))
+			for(var i = 0; i < user.tokens.length; i++) {
+				const tokenId = user.tokens[i].tokenId
+				console.log('token in loop', tokenId)
+				numOfTokensBeforeLogout = user.tokens.length
+				const theTokenId = await authentication.logout(user, tokenId)
+	
+				const numOfTokensAfterLogout = numOfTokensBeforeLogout - 1
+				assert(user.tokens.length === (numOfTokensAfterLogout))
+			}
 		})
 	})
 })

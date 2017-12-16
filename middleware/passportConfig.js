@@ -8,11 +8,18 @@ module.exports = (passport) => {
     passport.use(new passportJWTStrategy({
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: process.env.JWT_SECRET,
-        ignoreExpiration: true
-    }, async (payload, done) => {
+        ignoreExpiration: true,
+        passReqToCallback: true
+    }, async (req, payload, done) => {
+        req.tokenId = payload.tokenId
         try {
             const user = await User.findById(payload.sub)
             if (!user) {
+                return done(null, false)
+            }
+            const tokenIndex = user.findTokenIndex(payload.tokenId)
+            console.log('tokenIndex', tokenIndex)
+            if (tokenIndex === -1) {
                 return done(null, false)
             }
             done(null, user)

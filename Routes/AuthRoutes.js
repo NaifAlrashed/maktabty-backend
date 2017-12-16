@@ -15,9 +15,16 @@ router.post('/signup', async (req, res) => {
 })
 
 router.post('/login', passport.authenticate('local', { session: false }), async (req, res) => {
-	console.log(req.user)
 	const token = await authentication.signin(req.user)
 	res.json({ token })
+})
+
+router.post('/logout', passport.authenticate('jwt', { session: false}), async (req, res) => {
+	const token = authentication.logout(req.user, req.tokenId)
+	if (!token) {
+		throw Error('something went wrong with auth')
+	}
+	return res.end()
 })
 
 module.exports = router

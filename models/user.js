@@ -29,7 +29,7 @@ userSchema = new Schema({
 			type: String,
 			required: true
 		},
-		token: {
+		tokenId: {
 			type: String,
 			required: true
 		}
@@ -45,14 +45,27 @@ userSchema = new Schema({
 	}]
 })
 
+userSchema.methods.findTokenIndex = function (tokenId) {
+    for (var i = 0; i < this.tokens.length; i++) {
+		console.log('this.tokens[i].tokenId', this.tokens[i].tokenId)
+		console.log('tokenId', tokenId)
+	    if (this.tokens[i].tokenId == tokenId) {
+	        return i
+	    }
+	}
+	return -1
+}
+
 userSchema.methods.generateAndSaveAuthTokenWithAccess = async function (access) {
+	const tokenId = (new mongoose.Types.ObjectId()).toString()
 	var token = jwt.sign({
 		sub: this._id,
 		access,
         iat: Date.now(),
-        exp: new Date().setDate(new Date().getDate() + 1)
+		exp: new Date().setDate(new Date().getDate() + 1),
+		tokenId
 	}, process.env.JWT_SECRET).toString()
-	this.tokens.push({access, token})
+	this.tokens.push({access, tokenId})
 	await this.save()
 	return token
 }
