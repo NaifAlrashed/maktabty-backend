@@ -22,26 +22,25 @@ describe('authentication', () => {
 
 	describe('signup', () => {
 		it('should return an authenticated user with token', async () => {
-			const result = await authentication.signup(someUser, 'auth')
+			const result = await authentication.signup(someUser, 'signup')
 			assert(result.type === responseTypes.SIGNUP_SUCCESS, "the user is duplicate")
 			assert(result.token, "user is null")
 		})
 
 		it('should not return an authenticated user', async () => {
-			await authentication.signup(someUser, 'auth')
-			const result = await authentication.signup(someUser, 'auth')
+			await authentication.signup(someUser, 'signup')
+			const result = await authentication.signup(someUser, 'signup')
 			assert(result.type === responseTypes.DUPLICATION_ERROR)
 		})
 	})
 
 	describe('logout', () => {
 		it('should logout', async () => {			
-			await authentication.signup(someUser, 'auth')
+			await authentication.signup(someUser, 'signup')
 			const user = await User.findOne({ email: someUser.email })
 
 			for(var i = 0; i < user.tokens.length; i++) {
 				const tokenId = user.tokens[i].tokenId
-				console.log('token in loop', tokenId)
 				numOfTokensBeforeLogout = user.tokens.length
 				const theTokenId = await authentication.logout(user, tokenId)
 	

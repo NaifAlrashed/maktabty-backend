@@ -7,12 +7,12 @@ const mongooseError = require('./mongooseErrors')
 
 module.exports = {
     signup: async (user, access) => {
-        const newUser = new User(user)        
+        const newUser = new User(user)
         try {
             const token = await newUser.generateAndSaveAuthTokenWithAccess(access)
             return resourceFactory(token, responseTypes.SIGNUP_SUCCESS, null)
         } catch (err) {
-            if (mongooseError.isduplicationError(err)) {
+            if (mongooseError.isduplicationError(err)) {                
                 return resourceFactory(newUser, responseTypes.DUPLICATION_ERROR, err)
             } else if (mongooseError.isValidationError(err)) {
                 return resourceFactory(newUser, responseTypes.VALIDATION_ERROR, err)
@@ -26,7 +26,6 @@ module.exports = {
 
     logout: async (user, tokenToBeDeletedId) => {
         const index = user.findTokenIndex(tokenToBeDeletedId)
-        console.log(index)
         if(index !== -1) {
             user.tokens.splice(index, 1)
             await user.save()

@@ -42,13 +42,20 @@ userSchema = new Schema({
 	bookmarks: [{
 		type: Schema.Types.ObjectId,
 		ref: 'book'
-	}]
+	}],
+	isVerified: {
+		type: Boolean,
+		default: false
+	},
+	verificationCode: {
+		type: Number,
+		min: 1000,
+		max: 9999
+	}
 })
 
 userSchema.methods.findTokenIndex = function (tokenId) {
     for (var i = 0; i < this.tokens.length; i++) {
-		console.log('this.tokens[i].tokenId', this.tokens[i].tokenId)
-		console.log('tokenId', tokenId)
 	    if (this.tokens[i].tokenId == tokenId) {
 	        return i
 	    }
@@ -57,6 +64,9 @@ userSchema.methods.findTokenIndex = function (tokenId) {
 }
 
 userSchema.methods.generateAndSaveAuthTokenWithAccess = async function (access) {
+	if (access == 'signup') {
+		this.generateVerificationCode()
+	}
 	const tokenId = (new mongoose.Types.ObjectId()).toString()
 	var token = jwt.sign({
 		sub: this._id,
@@ -68,6 +78,10 @@ userSchema.methods.generateAndSaveAuthTokenWithAccess = async function (access) 
 	this.tokens.push({access, tokenId})
 	await this.save()
 	return token
+}
+
+userSchema.methods.generateVerificationCode = function () {
+	this.verificationCode = Math.floor((Math.random() * 9999) + 1001)
 }
 
 userSchema.pre('save', async function(next) {
