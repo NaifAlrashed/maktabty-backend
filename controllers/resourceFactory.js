@@ -25,6 +25,18 @@ class ResourceFound {
 	}
 }
 
+class ResourceUpdated {
+	constructor(resource) {
+		this.resource = resource
+		this.type = resourceTypes.RESOURCE_UPDATED
+		this.status = 200
+	}
+
+	response() {
+		return this.resource
+	}
+}
+
 class ValidationError {
 	constructor(resource, err) {
 		this.resource = resource
@@ -55,16 +67,16 @@ class DuplicationError {
 			return { error_message: 'duplication' }
 		} else {
 			return { error_message: customMessage }
-		}
-		
+		}		
 	}
 }
 
 class SignupSuccess {
-	constructor(token) {
+	constructor(resource) {
 		this.type = resourceTypes.SIGNUP_SUCCESS
 		this.status = 201
-		this.token = token
+		this.token = resource.token
+		this.user = resource.newUser
 	}
 
 	response() {
@@ -84,6 +96,8 @@ module.exports = (resource, type, err) => {
 			return new ResourceFound(resource)
 		case resourceTypes.SIGNUP_SUCCESS:
 			return new SignupSuccess(resource)
+		case resourceTypes.RESOURCE_UPDATED:
+			return new ResourceUpdated(resource)
 		default:
 			throw new Error("type not supported")
 	}

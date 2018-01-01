@@ -10,7 +10,8 @@ module.exports = {
         const newUser = new User(user)
         try {
             const token = await newUser.generateAndSaveAuthTokenWithAccess(access)
-            return resourceFactory(token, responseTypes.SIGNUP_SUCCESS, null)
+            console.log(newUser)
+            return resourceFactory({ newUser, token }, responseTypes.SIGNUP_SUCCESS, null)
         } catch (err) {
             if (mongooseError.isduplicationError(err)) {                
                 return resourceFactory(newUser, responseTypes.DUPLICATION_ERROR, err)
@@ -32,5 +33,15 @@ module.exports = {
             return tokenToBeDeletedId
         }        
         return false
+    },
+
+    verify: async (user, code) => {
+        if (!user.isVerified && code == user.verificationCode) {
+            user.isVerified = true
+            await user.save()
+            return resourceFactory(user, responseTypes.RESOURCE_UPDATED, null)
+        } else {
+            return false
+        }
     }
 }

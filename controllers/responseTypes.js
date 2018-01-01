@@ -4,5 +4,6 @@ module.exports = {
 	RESOURCE_CREATED: 'resource-created',
 	RESOURCE_FOUND: 'resource-found',
 	AUTHENTICATED: 'authenticated',
-	SIGNUP_SUCCESS: "signup-success"
+	SIGNUP_SUCCESS: "signup-success",
+	RESOURCE_UPDATED: "resource-updated"
 }

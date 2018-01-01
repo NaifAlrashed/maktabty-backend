@@ -49,4 +49,24 @@ describe('authentication', () => {
 			}
 		})
 	})
+
+	describe('verify(user, code)', () => {
+		it('should verify', async () => {
+			await authentication.signup(someUser, 'signup')
+			const user = await User.findOne()
+			const verificationCode = user.verificationCode
+			const result = await authentication.verify(user, verificationCode)
+			assert(result != false)
+			assert(result.resource.isVerified)
+		})
+
+		it('should not verify', async () => {
+			await authentication.signup(someUser, 'signup')
+			const user = await User.findOne()
+			const verificationCode = user.verificationCode
+			await authentication.verify(user, verificationCode)
+			const result = await authentication.verify(user, verificationCode)
+			assert(result === false)
+		})
+	})
 })

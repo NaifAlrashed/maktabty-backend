@@ -81,6 +81,7 @@ userSchema.methods.generateAndSaveAuthTokenWithAccess = async function (access) 
 }
 
 userSchema.methods.generateVerificationCode = function () {
+	console.log('generated verificationCode')
 	this.verificationCode = Math.floor((Math.random() * 9999) + 1001)
 }
 
