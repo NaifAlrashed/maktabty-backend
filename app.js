@@ -21,8 +21,12 @@ const startApp = () => {
         .use('/api', authRouter)
         .use('/api', bookmarkRouter)
         .use(exceptionResponse)
-        .set('views', __dirname + '/views/email')
+        .set('views', __dirname + '/views')
         .set('view engine', 'pug')
+        .use(express.static(__dirname + '/public'))
+        .use('/reset', (req, res) => {
+            res.render('index', {})
+        })
 
     app.listen(3030)
 }

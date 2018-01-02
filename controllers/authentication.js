@@ -4,13 +4,13 @@ const passport = require('passport')
 const resourceFactory = require('./resourceFactory')
 const responseTypes = require('./responseTypes')
 const mongooseError = require('./mongooseErrors')
+const save = require('./save')
 
 module.exports = {
     signup: async (user, access) => {
         const newUser = new User(user)
         try {
             const token = await newUser.generateAndSaveAuthTokenWithAccess(access)
-            console.log(newUser)
             return resourceFactory({ newUser, token }, responseTypes.SIGNUP_SUCCESS, null)
         } catch (err) {
             if (mongooseError.isduplicationError(err)) {                
@@ -43,5 +43,12 @@ module.exports = {
         } else {
             return false
         }
+    },
+
+    generateNewPassword: async (user) => await user.generateSaveAndReturnUserPassword(),
+    
+    updatePassword: async (user, newPassword) => {
+        user.password = newPassword
+        return await save(user)
     }
 }

@@ -3,6 +3,7 @@ const responseTypes = require('../controllers/responseTypes')
 const authentication = require('../controllers/authentication')
 const passport = require('passport')
 const sendMail = require('../controllers/sendMail')
+const User = require('../models/user')
 
 router.post('/signup', async (req, res) => {	
 	const user = {
@@ -12,7 +13,6 @@ router.post('/signup', async (req, res) => {
 	}
 
 	const userObj = await authentication.signup(user, 'signup')
-	console.log('userObj', userObj)
 	if (userObj.type === responseTypes.SIGNUP_SUCCESS) {
 		const response = await sendMail({
 			user,
@@ -50,6 +50,30 @@ router.post('/verify', passport.authenticate('jwt', { session: false }), async (
 		}
 	}
 	return res.status(400).json({ reason: "missing paramters"})
+})
+
+router.get('/reset/:email', async (req, res) => {
+	const user = await User.findOne({ email: req.params.email })
+	if (!user) {
+		return res.status(200).json({ message: success })
+	}
+	console.log('req.params', req.params)
+	console.log('req.param', req.param)
+	const password = await authentication.generateNewPassword(user)
+	const reaponse = await sendMail({
+		user,
+		subject: 'your new password to Maktabty',
+		templateOptions: {
+			email: user.email,
+			password
+		},
+		fileName: 'resetPassword'
+	})
+	res.status(200).json({ message: 'success!' })
+})
+
+router.get('/reset/password', passport.authenticate('jwt', { session: false }), async (req, res) => {
+	
 })
 
 module.exports = router

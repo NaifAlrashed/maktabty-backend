@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const jwt = require('jsonwebtoken')
 const bcryptjs = require('bcryptjs')
+const crypto = require('crypto')
 
 const Schema = mongoose.Schema
 
@@ -81,8 +82,17 @@ userSchema.methods.generateAndSaveAuthTokenWithAccess = async function (access) 
 }
 
 userSchema.methods.generateVerificationCode = function () {
-	console.log('generated verificationCode')
-	this.verificationCode = Math.floor((Math.random() * 9999) + 1001)
+	this.verificationCode = Math.floor(Math.random() * (9999 - 1001) + 1001)
+}
+
+userSchema.methods.generateSaveAndReturnUserPassword = async function () {
+	const passwordLength = 10
+	this.password = crypto.randomBytes(Math.ceil(passwordLength / 2))
+		.toString('hex')
+		.slice(0, passwordLength)
+	const password = this.password
+	await this.save()
+	return password
 }
 
 userSchema.pre('save', async function(next) {

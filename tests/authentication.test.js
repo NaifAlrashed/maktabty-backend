@@ -69,4 +69,25 @@ describe('authentication', () => {
 			assert(result === false)
 		})
 	})
+
+	describe('generateNewPassword(user)', () => {
+		it('should generate a 10 characters password & save it', async () => {
+			await authentication.signup(someUser, 'signup')
+			const user = await User.findOne()
+			const password = await authentication.generateNewPassword(user)
+			assert(password.length === 10)
+		})
+	})
+
+	describe('updatePassword(user, newPassword)', () => {
+		it('should update the password', async () => {
+			await authentication.signup(someUser, 'signup')
+			const user = await User.findOne()
+			const oldHashedPassword = user.password
+			const newUnhashedPassword = '123456787'
+			const result = await authentication.updatePassword(user, newUnhashedPassword)
+			const newHashedPassword = result.resource.password
+			assert(oldHashedPassword != newHashedPassword)
+		})
+	})
 })
