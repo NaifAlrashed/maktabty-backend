@@ -1,5 +1,5 @@
 var MONGO_DUPLICATION_ERROR = 11000
-var MONG_ERROR = 'MongoError'
+var MONG_ERROR = 'BulkWriteError'
 
 let publicMethods = {}
 

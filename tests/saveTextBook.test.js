@@ -16,8 +16,7 @@ const responseTyps = require('../controllers/responseTypes')
 chai.should()
 chai.use(chaiThings)
 
-mongoose.connect(process.env.MONGO_URI, { useMongoClient: true, promiseLibrary: global.Promise })
-mongoose.Promise = global.Promise
+mongoose.connect(process.env.MONGO_URI, { promiseLibrary: global.Promise })
 
 describe('save text book', () => {
 	describe('university operations', () => {
