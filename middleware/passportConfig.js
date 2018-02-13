@@ -18,7 +18,6 @@ module.exports = (passport) => {
                 return done(null, false)
             }
             const tokenIndex = user.findTokenIndex(payload.tokenId)
-            console.log('tokenIndex', tokenIndex)
             if (tokenIndex === -1) {
                 return done(null, false)
             }

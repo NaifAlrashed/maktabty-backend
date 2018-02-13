@@ -57,8 +57,6 @@ router.get('/resend/email/:email', async (req, res) => {
 	if (!user) {
 		return res.status(200).json({ message: success })
 	}
-	console.log('req.params', req.params)
-	console.log('req.param', req.param)
 	const password = await authentication.generateNewPassword(user)
 	const reaponse = await sendMail({
 		user,
@@ -72,8 +70,9 @@ router.get('/resend/email/:email', async (req, res) => {
 	res.status(200).json({ message: 'success!' })
 })
 
-router.get('/reset/password/:password', passport.authenticate('jwt', { session: false }), async (req, res) => {
-	
+router.post('/reset/password/:password', passport.authenticate('jwt', { session: false }), async (req, res) => {
+	const result = await authentication.updatePassword(req.user, req.params.password)
+	res.status(result.status).json(result.response())
 })
 
 module.exports = router
