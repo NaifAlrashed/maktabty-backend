@@ -175,6 +175,26 @@ describe('save text book', () => {
 				assert(user.books.should.include(result.resource._id), 'user doesnt include the book')
 			})
 		})
+	})
+
+	describe('image operations', () => {
+		let book
+		before(async () => {
+			const university = await University.findOne({})
+			const departmentObj = await saveTextBook.saveDepartmentIfNotExist(body.department, university)
+			const courseObj = await saveTextBook.saveCourseIfNotExist(body.course, departmentObj.resource)
+			const user = await User.findOne({ email: 'naif@gmail.com' })
+			
+			const bookObj = await saveTextBook.saveBook(body.book, user, courseObj.resource)
+			book = bookObj.resource
+		})
+
+		it('should save image link to book', async () => {
+			const images = [{ filename: 'image1' }, { filename: 'image2' }, { filename: 'image3' }]
+
+			const result = await saveTextBook.saveImages(images, book._id)
+			console.log(result)
+		})
 
 		after(async () => {
 			await User.remove()

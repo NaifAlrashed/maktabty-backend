@@ -36,6 +36,16 @@ exports.saveBook = async (req, res) => {
     res.status(bookObj.status).json(bookObj.response())
 }
 
+exports.savePhotoPathToBook = async (req, res) => {
+
+    console.log(req.headers.bookid)
+    if(req.headers['bookid'] === undefined) {
+        return res.status(400).json({ message: 'bookId is not provided' })
+    }
+    const result = await saveTextBookBehavior.saveImages(req.files, req.headers['bookid'])
+    res.status(result.status).json(result.response())
+}
+
 const isResourceSavedOrRetrieved = (resource) => {
     return (resource.type === responseTypes.RESOURCE_CREATED || resource.type === responseTypes.RESOURCE_FOUND)
 }

@@ -98,5 +98,13 @@ module.exports = {
 
         const [bookResult, SellerResult, courseResult] = await Promise.all([bookPromise, sellerPromise, coursePromise])
         return bookResult
+    },
+
+    saveImages: async (files, bookId) => {
+        let book = await Book.findById(bookId)
+        for (file of files) {
+            book.pictures.push(file.filename)
+        }
+        return await save(book)
     }
 }
