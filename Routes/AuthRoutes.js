@@ -52,7 +52,7 @@ router.post('/verify', passport.authenticate('jwt', { session: false }), async (
 	return res.status(400).json({ reason: "missing paramters"})
 })
 
-router.get('/reset/:email', async (req, res) => {
+router.get('/resend/email/:email', async (req, res) => {
 	const user = await User.findOne({ email: req.params.email })
 	if (!user) {
 		return res.status(200).json({ message: success })
@@ -72,7 +72,7 @@ router.get('/reset/:email', async (req, res) => {
 	res.status(200).json({ message: 'success!' })
 })
 
-router.get('/reset/password', passport.authenticate('jwt', { session: false }), async (req, res) => {
+router.get('/reset/password/:password', passport.authenticate('jwt', { session: false }), async (req, res) => {
 	
 })
 
