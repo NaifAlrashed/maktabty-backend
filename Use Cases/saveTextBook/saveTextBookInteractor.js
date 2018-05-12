@@ -1,13 +1,13 @@
 //Description: this file handles the event of posting a book.
 //the flow was designed through the following way: saveIfNotExistUniversity -> saveIfNotExistDepartment -> saveIfNotExistCourse -> saveBook
 
-const University = require('../models/university')
-const Department = require('../models/department')
-const Book = require('../models/book')
-const Course = require('../models/course')
-const types = require('./responseTypes')
-const save = require('./save')
-const resourceFactory = require('./resourceFactory')
+const University = require('../../models/university')
+const Department = require('../../models/department')
+const Book = require('../../models/book')
+const Course = require('../../models/course')
+const types = require('../../Entities/responseTypes')
+const save = require('../../Entities/save')
+const resourceFactory = require('../../Entities/resourceFactory')
 var MONGO_DUPLICATION_ERROR = 11000
 module.exports = {
 

@@ -1,9 +1,9 @@
 const router = require('express').Router()
-const responseTypes = require('../controllers/responseTypes')
-const authentication = require('../controllers/authentication')
+const responseTypes = require('../../Entities/responseTypes')
+const authentication = require('./authentication')
 const passport = require('passport')
-const sendMail = require('../controllers/sendMail')
-const User = require('../models/user')
+const sendMail = require('../../Entities/sendMail')
+const User = require('../../models/user')
 
 router.post('/signup', async (req, res) => {	
 	const user = {

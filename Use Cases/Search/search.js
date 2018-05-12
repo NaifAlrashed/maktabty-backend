@@ -1,6 +1,6 @@
-const Book = require('../models/book')
-const resourceFactory = require('./resourceFactory')
-const responseType = require('./responseTypes')
+const Book = require('../../models/book')
+const resourceFactory = require('../../Entities/resourceFactory')
+const responseType = require('../../Entities/responseTypes')
 
 module.exports = {
 	book: async (searchTerm, page) => {

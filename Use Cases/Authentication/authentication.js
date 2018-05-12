@@ -1,10 +1,10 @@
 const router = require('express').Router()
-const User = require('../models/user')
+const User = require('../../models/user')
 const passport = require('passport')
-const resourceFactory = require('./resourceFactory')
-const responseTypes = require('./responseTypes')
-const mongooseError = require('./mongooseErrors')
-const save = require('./save')
+const resourceFactory = require('../../Entities/resourceFactory')
+const responseTypes = require('../../Entities/responseTypes')
+const mongooseError = require('../../Entities/mongooseErrors')
+const save = require('../../Entities/save')
 
 module.exports = {
     signup: async (user, access) => {

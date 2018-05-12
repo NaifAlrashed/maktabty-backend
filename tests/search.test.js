@@ -1,10 +1,10 @@
 const chai = require('chai')
 const assert = chai.assert
 const chaiThings = require('chai-things')
-const search = require('../controllers/search')
+const search = require('../Use Cases/Search/search')
 const books = require('./booksStub.json').books
 const Book = require('../models/book')
-const saveTextBook = require('../controllers/saveTextBook')
+const saveTextBook = require('../Use Cases/saveTextBook/saveTextBookInteractor')
 const body = require('./saveTextBookStub.json')
 const User = require('../models/user')
 const Department = require('../models/department')

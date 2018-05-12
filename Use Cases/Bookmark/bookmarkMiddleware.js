@@ -1,5 +1,5 @@
-const bookmark = require('../controllers/bookmark')
-const Book = require('../models/book')
+const bookmark = require('./bookmark')
+const Book = require('../../models/book')
 
 module.exports = {
 	bookmark: async (req, res) => {

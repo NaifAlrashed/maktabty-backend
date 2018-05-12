@@ -1,7 +1,7 @@
-const User = require('../models/user')
-const save = require('./save')
-const resourceFactory = require('./resourceFactory')
-const responseType = require('./responseTypes')
+const User = require('../../models/user')
+const save = require('../../Entities/save')
+const resourceFactory = require('../../Entities/resourceFactory')
+const responseType = require('../../Entities/responseTypes')
 
 module.exports = async (user, book) => {
 	let result

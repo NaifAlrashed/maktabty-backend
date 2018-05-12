@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const search = require('../middleware/searchMiddleware')
+const search = require('./searchMiddleware')
 
 router.get('/search/book/:bookName/:pageNumber', search.book)
 

@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const passport = require('passport')
-const postABook = require('../middleware/saveTextBookMiddleware')
-const upload = require('../middleware/uploadMiddleware')
+const postABook = require('./saveTextBookMiddleware')
+const upload = require('../../Entities/middleware/uploadMiddleware')
 
 router.post('/books/text-book/post', passport.authenticate('jwt', { session: false }), postABook.saveUniversityIfNotExist,
 	postABook.saveDepartmentIfNotExist,	postABook.saveCourseIfNotExist, postABook.saveBook)

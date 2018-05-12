@@ -5,9 +5,9 @@ var assert = chai.assert
 const chaiThings = require('chai-things')
 const mongoose = require('mongoose')
 const someUser = require('./userStub.json')
-const authentication = require('../controllers/authentication')
+const authentication = require('../Use Cases/Authentication/authentication')
 const User = require('../models/user')
-const responseTypes = require('../controllers/responseTypes')
+const responseTypes = require('../Entities/responseTypes')
 
 mongoose.connect(process.env.MONGO_URI, { promiseLibrary: global.Promise })
 

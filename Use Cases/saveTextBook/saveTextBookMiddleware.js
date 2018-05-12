@@ -1,5 +1,5 @@
-const saveTextBookBehavior = require('../controllers/saveTextBook')
-const responseTypes = require('../controllers/responseTypes')
+const saveTextBookBehavior = require('./saveTextBookInteractor')
+const responseTypes = require('../../Entities/responseTypes')
 
 exports.saveUniversityIfNotExist = async (req, res, next) => {
     let universityObj = await saveTextBookBehavior.saveUniversityIfNotExist(req.body.university)
