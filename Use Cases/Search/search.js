@@ -11,6 +11,7 @@ module.exports = {
 			.find({name: regExpdSearchedTerm})
 			.skip(skip)
 			.limit(limit)
-		return resourceFactory(result, responseType.RESOURCE_FOUND, null)
+		const structuredResults = { books: result }
+		return resourceFactory(structuredResults, responseType.RESOURCE_FOUND, null)
 	}
 }

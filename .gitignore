@@ -60,3 +60,4 @@ typings/
 # configuration
 Config/*
 /Config/config.json
+workspace.xml

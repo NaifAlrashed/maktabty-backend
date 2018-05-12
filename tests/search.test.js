@@ -47,7 +47,7 @@ describe('search', () => {
 
 		it('should have three results, all of which include introduction as the name of the book', async () => {
 			const result = await search.book('introduction', 1)
-			const resource = result.resource
+			const resource = result.resource.books
 			assert(resource.length === 3)
 			assert(resource[0].name.match(/introduction/i))
 			assert(resource[1].name.match(/introduction/i))
@@ -58,8 +58,8 @@ describe('search', () => {
 			const firstResult = await search.book('design', 1)
 			const secondResult = await search.book('design', 2)
 
-			assert(firstResult.resource.length === 10)
-			assert(secondResult.resource.length === 1)
+			assert(firstResult.resource.books.length === 10)
+			assert(secondResult.resource.books.length === 1)
 		})
 	})
 	after(async () => {
