@@ -23,6 +23,7 @@ const startApp = () => {
         .use('/api/v1', bookmarkRouter)
         .use('/api/v1', searchRouter)
         .use(exceptionResponse)
+        .disable('etag')        
         .set('views', __dirname + '/views')
         .set('view engine', 'pug')
         .use(express.static(__dirname + '/public'))
